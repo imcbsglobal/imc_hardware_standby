@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Item List</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f4f8fb; padding:20px; }
+  .header { display:flex; justify-content:center; position:relative; margin-bottom:15px; }
+  .header h2 { margin:0; font-size:28px; }
+  .add-btn { position:absolute; right:0; background:#007bff; color:#fff; padding:10px 18px; text-decoration:none; border-radius:6px; }
+  .add-btn:hover { background:#0056b3; }
+  table { width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 0 15px rgba(0,0,0,0.1); }
+  th, td { padding:15px; text-align:left; border-bottom:1px solid #ddd; }
+  th { background:#007bff; color:#fff; }
+  .image-gallery { display:flex; flex-wrap:wrap; gap:8px; }
+  .image-gallery img { width:60px; height:60px; object-fit:cover; border-radius:6px; border:1px solid #ccc; }
+  .action-buttons a, .action-buttons button { margin-right:8px; padding:6px 12px; border-radius:4px; font-size:14px; text-decoration:none; border:none; cursor:pointer; }
+  .action-buttons a { background:#28a745; color:#fff; }
+  .action-buttons a:hover { background:#218838; }
+  .delete-btn { background:#dc3545; color:#fff; }
+  .delete-btn:hover { background:#c82333; }
+
+  /* Notes Icon */
+  .notes-icon {
+    display:inline-block;
+    width:24px;
+    height:24px;
+    background:#007bff;
+    color:#fff;
+    border-radius:50%;
+    text-align:center;
+    font-size:16px;
+    line-height:24px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  /* Modal Styles */
+  .modal {
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    z-index:1000;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    overflow:auto; /* In case modal is taller than screen */
+  }
+  .modal-content {
+    background:#fff;
+    padding:20px;
+    border-radius:8px;
+    max-width:600px;
+    width:90%;
+    position:relative;
+    animation:fadeIn 0.3s ease-in-out;
+    box-shadow:0 4px 20px rgba(0,0,0,0.2);
+  }
+  @keyframes fadeIn {
+    from {opacity:0; transform:translateY(-20px);}
+    to {opacity:1; transform:translateY(0);}
+  }
+  .close-btn {
+    position:absolute;
+    top:10px;
+    right:15px;
+    font-size:22px;
+    cursor:pointer;
+    color:#333;
+  }
+  .modal h3 {
+    margin-top:0;
+    color:#007bff;
+    font-size:20px;
+    margin-bottom:10px;
+  }
+  .modal p {
+    font-size:15px;
+    color:#444;
+    white-space:pre-wrap; /* Preserve line breaks */
+    word-wrap:break-word; /* Wrap long words */
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h2>Item Details</h2>
+  <a href="{% url 'add' %}" class="add-btn">+ Add New Item</a>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>SL. No</th>
+<th>Name</th>
+<th>Serial Number</th>
+<th>Notes</th>
+<th>Images</th>
+<th>Stock</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+{% for item in items %}
+<tr>
+<td>{{ forloop.counter }}</td>
+<td>{{ item.name }}</td>
+<td>{{ item.serial_number }}</td>
+<td>
+  {% if item.notes %}
+    <span class="notes-icon" onclick="openModal('{{ item.name|escapejs }}', '{{ item.notes|escapejs }}')">i</span>
+  {% else %}
+    <span style="color:#888;">—</span>
+  {% endif %}
+</td>
+<td>
+  {% if item.images.all %}
+    <div class="image-gallery">
+      {% for img in item.images.all %}
+        <img src="{{ img.image.url }}" alt="{{ item.name }}">
+      {% endfor %}
+    </div>
+  {% else %}
+    No Images
+  {% endif %}
+</td>
+<td>{{ item.stock }}</td>
+<td class="action-buttons">
+  <a href="{% url 'item_edit' item.id %}">Edit</a>
+  <form action="{% url 'item_delete' item.id %}" method="POST" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="delete-btn">Delete</button>
+  </form>
+</td>
+</tr>
+{% empty %}
+<tr><td colspan="7" style="text-align:center;">No items available</td></tr>
+{% endfor %}
+</tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal" id="notesModal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h3 id="modalTitle">Notes</h3>
+    <p id="modalText"></p>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById('notesModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalText = document.getElementById('modalText');
+
+  function openModal(itemName, notes) {
+    modalTitle.innerText = itemName + ' - Notes';
+    modalText.innerText = notes;
+    modal.style.display = 'flex';
+  }
+
+  function closeModal() {
+    modal.style.display = 'none';
+  }
+
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      closeModal();
+    }
+  }
+</script>
+
+</body>
+</html>
+
