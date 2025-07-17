@@ -4,143 +4,298 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Item List</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <style>
-  body { font-family: Arial, sans-serif; background:#f4f8fb; padding:20px; }
-  .header { display:flex; justify-content:center; position:relative; margin-bottom:15px; }
-  .header h2 { margin:0; font-size:28px; }
-  .add-btn { position:absolute; right:0; background:#007bff; color:#fff; padding:10px 18px; text-decoration:none; border-radius:6px; }
-  .add-btn:hover { background:#0056b3; }
-  table { width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 0 15px rgba(0,0,0,0.1); }
-  th, td { padding:15px; text-align:left; border-bottom:1px solid #ddd; }
-  th { background:#007bff; color:#fff; }
-  .image-gallery { display:flex; flex-wrap:wrap; gap:8px; }
-  .image-gallery img { width:60px; height:60px; object-fit:cover; border-radius:6px; border:1px solid #ccc; }
-  .action-buttons a, .action-buttons button { margin-right:8px; padding:6px 12px; border-radius:4px; font-size:14px; text-decoration:none; border:none; cursor:pointer; }
-  .action-buttons a { background:#28a745; color:#fff; }
-  .action-buttons a:hover { background:#218838; }
-  .delete-btn { background:#dc3545; color:#fff; }
-  .delete-btn:hover { background:#c82333; }
+  * { 
+    box-sizing: border-box;
+   }
+  body {
+     font-family: Arial, sans-serif;
+      background: #f4f8fb;
+       margin: 0; 
+       padding: 20px; }
+
+  .header {
+     display: flex;
+      justify-content: center;
+      align-items: center;
+       position: relative;
+        margin-bottom: 20px;
+       }
+  .header h2 { 
+    margin: 5px; 
+    font-size: 30px;
+     color: #333;
+      font-weight: bold;
+     }
+  .add-btn {
+     position: absolute;
+      right: 0;
+       background: #007bff;
+        color: #fff;
+    padding: 10px 18px;
+     text-decoration: none;
+      border-radius: 6px; 
+      font-size: 14px;
+       font-weight: bold;
+       }
+  .add-btn:hover { 
+    background: #0056b3;
+   }
+
+  /* Filter & Search Container */
+  .filter-container {
+    background: #fff; 
+    padding: 15px;
+     border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+     margin-bottom: 20px;
+  }
+  .filter-container form
+   {
+    display: grid;
+     grid-template-columns: 1fr auto;
+      gap: 12px; 
+      align-items: center;
+  }
+  .search-box input {
+    width: 100%;
+     padding: 10px 12px;
+      font-size: 14px;
+    border: 1px solid #ccc;
+     border-radius: 6px;
+      outline: none; 
+      transition: border 0.3s;
+  }
+  .search-box input:focus {
+     border-color: #007bff;
+     }
+  .filter-container button {
+
+    background: #007bff; 
+    color: #fff;
+     border: none;
+      padding: 10px 16px;
+    border-radius: 6px;
+     font-size: 14px;
+      cursor: pointer;
+       transition: background 0.3s;
+  }
+  .filter-container button:hover {
+     background: #0056b3; 
+    }
+
+  /* Table Styling */
+  table { 
+    width: 100%; 
+    border-collapse: collapse;
+     background: #fff;
+    border-radius: 10px;
+     overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+     }
+  thead {
+     background: #007bff; 
+     color: #fff;
+     }
+  th, td { 
+    padding: 14px 16px;
+     text-align: left; 
+     font-size: 14px;
+      border-bottom: 1px solid #eee;
+     }
+  th { 
+    font-size: 15px;
+     font-weight: bold;
+      white-space: nowrap;
+     }
+  tbody tr:hover {
+     background: #f9fbfd;
+    }
+
+  /* Images */
+  .image-gallery { 
+    display: flex; 
+    flex-wrap: wrap;
+     gap: 6px;
+     }
+  .image-gallery img 
+  {
+    width: 50px;
+     height: 50px; 
+     object-fit: cover;
+      border-radius: 4px;
+    border: 1px solid #ccc;
+     transition: transform 0.3s;
+  }
+  .image-gallery img:hover {
+     transform: scale(1.1);
+     }
+
+  /* Actions */
+  .action-buttons {
+     display: flex;
+      gap: 8px; 
+    }
+  .icon-btn {
+     width: 34px;
+      height: 34px;
+       display: flex;
+        justify-content: center;
+         align-items: center;
+    border-radius: 6px;
+     background: none;
+      font-size: 18px;
+       cursor: pointer; 
+       transition: 0.3s;
+       }
+  .edit-btn { 
+    color: #28a745; 
+  }
+  .edit-btn:hover { 
+    background: #e9f7ef;
+   }
+  .delete-btn {
+     color: #dc3545;
+     }
+  .delete-btn:hover {
+     background: #f8d7da; 
+    }
 
   /* Notes Icon */
-  .notes-icon {
-    display:inline-block;
-    width:24px;
-    height:24px;
-    background:#007bff;
-    color:#fff;
-    border-radius:50%;
-    text-align:center;
-    font-size:16px;
-    line-height:24px;
-    font-weight:bold;
-    cursor:pointer;
-  }
+  .notes-icon { 
+    display: inline-block;
+     width: 26px; 
+     height: 26px;
+      background: #007bff;
+       color: #fff;
+    border-radius: 50%;
+     text-align: center;
+      font-size: 16px;
+       line-height: 26px;
+        font-weight: bold; 
+        cursor: pointer;
+       }
 
-  /* Modal Styles */
+  /* Modal */
   .modal {
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.6);
-    z-index:1000;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
-    overflow:auto; /* In case modal is taller than screen */
-  }
-  .modal-content {
-    background:#fff;
-    padding:20px;
-    border-radius:8px;
-    max-width:600px;
-    width:90%;
-    position:relative;
-    animation:fadeIn 0.3s ease-in-out;
-    box-shadow:0 4px 20px rgba(0,0,0,0.2);
-  }
-  @keyframes fadeIn {
-    from {opacity:0; transform:translateY(-20px);}
-    to {opacity:1; transform:translateY(0);}
-  }
+     display: none;
+      position: fixed;
+       top: 0;
+        left: 0;
+        width: 100%;
+         height: 100%;
+    background: rgba(0,0,0,0.6);
+     justify-content: center; 
+     align-items: center;
+      padding: 20px;
+     }
+  .modal-content { 
+    background: #fff;
+     padding: 20px 25px;
+      border-radius: 8px;
+    max-width: 600px;
+     width: 90%; 
+     position: relative;
+      animation: fadeIn 0.3s ease-in-out; 
+    }
+  .modal-content h3 {
+     margin-bottom: 10px;
+      font-size: 20px;
+     }
+  .modal-content p {
+     font-size: 15px;
+      color: #555;
+     }
   .close-btn {
-    position:absolute;
-    top:10px;
-    right:15px;
-    font-size:22px;
-    cursor:pointer;
-    color:#333;
-  }
-  .modal h3 {
-    margin-top:0;
-    color:#007bff;
-    font-size:20px;
-    margin-bottom:10px;
-  }
-  .modal p {
-    font-size:15px;
-    color:#444;
-    white-space:pre-wrap; /* Preserve line breaks */
-    word-wrap:break-word; /* Wrap long words */
-  }
+     position: absolute;
+      top: 12px; 
+      right: 15px; 
+      font-size: 22px;
+       cursor: pointer;
+       }
+
+  @media(max-width:992px)
+  {
+     th, td{
+      font-size:13px;
+      padding:10px;
+      } 
+      .filter-container form{
+        grid-template-columns:1fr;
+        }
+         }
 </style>
 </head>
 <body>
 
+<!-- Header -->
 <div class="header">
-  <h2>Item Details</h2>
-  <a href="{% url 'add' %}" class="add-btn">+ Add New Item</a>
+  <h2>StandBy Product</h2>
+  <a href="{% url 'add' %}" class="add-btn"><i class="fas fa-plus"></i> Add New</a>
 </div>
 
+<!-- Search Form -->
+<div class="filter-container">
+  <form method="get" action="">
+    <div class="search-box">
+      <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search by Name or Serial Number...">
+    </div>
+    <button type="submit"><i class="fas fa-search"></i> Search</button>
+  </form>
+</div>
+
+<!-- Table -->
 <table>
 <thead>
 <tr>
-<th>SL. No</th>
-<th>Name</th>
-<th>Serial Number</th>
-<th>Notes</th>
-<th>Images</th>
-<th>Stock</th>
-<th>Actions</th>
+  <th>Sl.No.</th>
+  <th>Created Date</th>
+  <th>Item Name</th>
+  <th>Serial Number</th>
+  <th>Notes</th>
+  <th>Images</th>
+  <th>Stock</th>
+  <th>Created By</th>
+  <th>Actions</th>
 </tr>
 </thead>
 <tbody>
 {% for item in items %}
 <tr>
-<td>{{ forloop.counter }}</td>
-<td>{{ item.name }}</td>
-<td>{{ item.serial_number }}</td>
-<td>
-  {% if item.notes %}
-    <span class="notes-icon" onclick="openModal('{{ item.name|escapejs }}', '{{ item.notes|escapejs }}')">i</span>
-  {% else %}
-    <span style="color:#888;">—</span>
-  {% endif %}
-</td>
-<td>
-  {% if item.images.all %}
-    <div class="image-gallery">
-      {% for img in item.images.all %}
-        <img src="{{ img.image.url }}" alt="{{ item.name }}">
-      {% endfor %}
-    </div>
-  {% else %}
-    No Images
-  {% endif %}
-</td>
-<td>{{ item.stock }}</td>
-<td class="action-buttons">
-  <a href="{% url 'item_edit' item.id %}">Edit</a>
-  <form action="{% url 'item_delete' item.id %}" method="POST" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="delete-btn">Delete</button>
-  </form>
-</td>
+  <td>{{ forloop.counter }}</td>
+  <td>{{ item.created_at|date:"d M Y" }}</td>
+  <td>{{ item.name }}</td>
+  <td>{{ item.serial_number }}</td>
+  <td>
+    {% if item.notes %}
+      <span class="notes-icon" onclick="openModal('{{ item.name|escapejs }}', '{{ item.notes|escapejs }}')">i</span>
+    {% else %}
+      <span style="color:#888;">—</span>
+    {% endif %}
+  </td>
+  <td>
+    {% if item.images.all %}
+      <div class="image-gallery">
+        {% for img in item.images.all %}
+          <img src="{{ img.image.url }}" alt="{{ item.name }}">
+        {% endfor %}
+      </div>
+    {% else %} No Images {% endif %}
+  </td>
+  <td>{{ item.stock }}</td>
+  <td>{{ item.created_by.username }}</td>
+  <td class="">
+    <a href="{% url 'item_edit' item.id %}" class="icon-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+    <form action="{% url 'item_delete' item.id %}" method="POST" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="icon-btn delete-btn" title="Delete" onclick="return confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></button>
+    </form>
+  </td>
 </tr>
 {% empty %}
-<tr><td colspan="7" style="text-align:center;">No items available</td></tr>
+<tr><td colspan="9" style="text-align:center;">No items found</td></tr>
 {% endfor %}
 </tbody>
 </table>
@@ -155,27 +310,18 @@
 </div>
 
 <script>
-  const modal = document.getElementById('notesModal');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalText = document.getElementById('modalText');
+const modal = document.getElementById('notesModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalText = document.getElementById('modalText');
 
-  function openModal(itemName, notes) {
-    modalTitle.innerText = itemName + ' - Notes';
-    modalText.innerText = notes;
-    modal.style.display = 'flex';
-  }
-
-  function closeModal() {
-    modal.style.display = 'none';
-  }
-
-  window.onclick = function(event) {
-    if (event.target === modal) {
-      closeModal();
-    }
-  }
+function openModal(itemName, notes) {
+  modalTitle.innerText = itemName + ' - Notes';
+  modalText.innerText = notes;
+  modal.style.display = 'flex';
+}
+function closeModal() { modal.style.display = 'none'; }
+window.onclick = function(e) { if (e.target === modal) closeModal(); }
 </script>
 
 </body>
 </html>
-

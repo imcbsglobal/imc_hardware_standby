@@ -1,70 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Item</title>
-  <style>
-    body { font-family: Arial; background:#f4f8fb; padding:40px; }
-    .form-container { background:#fff; padding:30px; max-width:650px; margin:auto; border-radius:12px; box-shadow:0 0 15px rgba(0,0,0,0.1); }
-    h2 { text-align:center; margin-bottom:20px; }
-    .form-group { margin-bottom:15px; }
-    label { display:block; font-weight:bold; margin-bottom:6px; }
-    input, textarea { width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; }
-    .preview-images { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
-    .preview-images img { width:90px; height:90px; object-fit:cover; border-radius:6px; border:1px solid #ccc; }
-    button { background:#007bff; color:#fff; padding:12px 20px; border:none; border-radius:6px; font-size:16px; cursor:pointer; }
-    button:hover { background:#0056b3; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Item</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f8fb;
+  padding: 40px;
+}
+.form-container {
+  background: #fff;
+  padding: 30px;
+  max-width: 800px;
+  margin: auto;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  position: relative;
+}
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.form-group {
+  margin-bottom: 15px;
+}
+label {
+  font-weight: bold;
+}
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+textarea {
+  height: 80px;
+  resize: vertical;
+}
+.preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+.preview-box {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+}
+.preview-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.remove-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: rgba(255, 0, 0, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  font-size: 14px;
+  cursor: pointer;
+}
+button[type="submit"] {
+  background: #007bff;
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:disabled {
+  background: #ccc;
+}
+.error {
+  color: red;
+  font-size: 14px;
+  display: none;
+}
+.back-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #0f6cd0;
+  color: #fff;
+  padding: 10px 16px;
+  text-decoration: none;
+  border-radius: 6px;
+}
+</style>
 </head>
 <body>
 
 <div class="form-container">
-  <h2>Add New Item</h2>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-group">
-      <label>Item Name</label>
-      <input type="text" name="itemname" required>
-    </div>
-    <div class="form-group">
-      <label>Serial Number</label>
-      <input type="text" name="serialnumber" required>
-    </div>
-    <div class="form-group">
-      <label>Notes</label>
-      <textarea name="notes"></textarea>
-    </div>
-    <div class="form-group">
-      <label>Upload Images</label>
-      <input type="file" name="images" accept="image/*" multiple required>
-      <div class="preview-images" id="preview"></div>
-    </div>
-    <div class="form-group">
-      <label>Stock</label>
-      <input type="number" name="stock" value="0" min="0" required>
-    </div>
-    <button type="submit">Submit Item</button>
-  </form>
+<a href="{% url 'item_list' %}" class="back-btn">← Back</a>
+<h2>Add New StandBy Item</h2>
+
+<form method="POST" enctype="multipart/form-data" id="itemForm">
+{% csrf_token %}
+<div class="form-group">
+  <label>Item Name</label>
+  <input type="text" name="itemname" required>
+</div>
+<div class="form-group">
+  <label>Serial Number <span style="color:red;">*</span></label>
+  <input type="text" id="serialnumber" name="serialnumber" required placeholder="Enter serial number">
+  <div class="error" id="serial-error">Serial number already exists!</div>
+</div>
+<div class="form-group">
+  <label>Notes</label>
+  <textarea name="notes"></textarea>
+</div>
+
+<div class="form-group">
+  <label>Upload Images</label>
+  <input type="file" id="imageUpload" name="images" accept="image/*" multiple>
+  <div class="preview-container" id="preview"></div>
+</div>
+
+<div class="form-group">
+  <label>Stock</label>
+  <input type="number" name="stock" min="0" required>
+</div>
+<div class="button-container">
+  <button type="submit" id="submitBtn">Submit</button>
+</div>
+</form>
 </div>
 
 <script>
-  const input = document.querySelector('input[name="images"]');
-  const preview = document.getElementById('preview');
-  input.addEventListener('change', function() {
-    preview.innerHTML = '';
-    [...this.files].forEach(file => {
-      const reader = new FileReader();
-      reader.onload = e => {
-        const img = document.createElement('img');
-        img.src = e.target.result;
-        preview.appendChild(img);
-      }
-      reader.readAsDataURL(file);
-    });
+// ✅ Multiple Uploads with One Browse Button
+const imageInput = document.getElementById('imageUpload');
+const previewContainer = document.getElementById('preview');
+let filesArray = [];
+
+// Add new files without removing old ones
+imageInput.addEventListener('change', function() {
+  const newFiles = Array.from(this.files);
+  filesArray = [...filesArray, ...newFiles]; // Merge old + new
+  updateInputFiles();
+  displayImages();
+});
+
+// Display previews
+function displayImages() {
+  previewContainer.innerHTML = '';
+  filesArray.forEach((file, index) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const box = document.createElement('div');
+      box.classList.add('preview-box');
+      box.innerHTML = `
+        <img src="${e.target.result}" alt="Image Preview">
+        <button class="remove-btn" onclick="removeImage(${index})">&times;</button>
+      `;
+      previewContainer.appendChild(box);
+    };
+    reader.readAsDataURL(file);
   });
+}
+
+// Remove selected image
+function removeImage(index) {
+  filesArray.splice(index, 1);
+  updateInputFiles();
+  displayImages();
+}
+
+// Update input files dynamically
+function updateInputFiles() {
+  const dataTransfer = new DataTransfer();
+  filesArray.forEach(file => dataTransfer.items.add(file));
+  imageInput.files = dataTransfer.files;
+}
+
+// ✅ Serial Number Check (AJAX)
+const serialInput = document.getElementById('serialnumber');
+const serialError = document.getElementById('serial-error');
+const submitBtn = document.getElementById('submitBtn');
+
+serialInput.addEventListener('input', function() {
+  const value = this.value.toUpperCase();
+  this.value = value;
+  if (value.length > 0) {
+    fetch(`/check-serial/?serial=${value}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.exists) {
+          serialError.style.display = 'block';
+          submitBtn.disabled = true;
+        } else {
+          serialError.style.display = 'none';
+          submitBtn.disabled = false;
+        }
+      });
+  }
+});
 </script>
 
 </body>
 </html>
+
+
 

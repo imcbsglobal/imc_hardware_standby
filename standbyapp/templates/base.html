@@ -1,0 +1,7 @@
+{% if messages %}
+  <div>
+    {% for message in messages %}
+      <p style="color: {{ message.tags == 'error'|yesno:'red,green' }}">{{ message }}</p>
+    {% endfor %}
+  </div>
+{% endif %}
