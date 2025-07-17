@@ -4,6 +4,11 @@ from django.db import IntegrityError
 from django.contrib import messages
 from .models import Item, ItemImage
 
+
+
+
+# fheuhijreiogtrej
+
 # ✅ List all items
 def item_list(request):
     items = Item.objects.prefetch_related('images').all()
