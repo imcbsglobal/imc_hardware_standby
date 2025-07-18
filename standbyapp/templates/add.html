@@ -75,8 +75,13 @@ textarea {
   font-size: 14px;
   cursor: pointer;
 }
+.button-container {
+  display: flex;
+  justify-content: center;  /* ✅ Centers the button */
+  margin-top: 20px;
+}
 button[type="submit"] {
-  background: #007bff;
+  background: black;
   color: #fff;
   padding: 12px 24px;
   border: none;
@@ -96,7 +101,7 @@ button:disabled {
   position: absolute;
   top: 15px;
   left: 15px;
-  background: #0f6cd0;
+  background: black;
   color: #fff;
   padding: 10px 16px;
   text-decoration: none;
@@ -136,6 +141,8 @@ button:disabled {
   <label>Stock</label>
   <input type="number" name="stock" min="0" required>
 </div>
+
+<!-- ✅ Centered Submit Button -->
 <div class="button-container">
   <button type="submit" id="submitBtn">Submit</button>
 </div>
@@ -214,6 +221,3 @@ serialInput.addEventListener('input', function() {
 
 </body>
 </html>
-
-
-

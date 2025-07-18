@@ -7,241 +7,127 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-  * { 
-    box-sizing: border-box;
-   }
   body {
-     font-family: Arial, sans-serif;
-      background: #f4f8fb;
-       margin: 0; 
-       padding: 20px; }
-
-  .header {
-     display: flex;
-      justify-content: center;
-      align-items: center;
-       position: relative;
-        margin-bottom: 20px;
-       }
-  .header h2 { 
-    margin: 5px; 
-    font-size: 30px;
-     color: #333;
-      font-weight: bold;
-     }
-  .add-btn {
-     position: absolute;
-      right: 0;
-       background: #007bff;
-        color: #fff;
-    padding: 10px 18px;
-     text-decoration: none;
-      border-radius: 6px; 
-      font-size: 14px;
-       font-weight: bold;
-       }
-  .add-btn:hover { 
-    background: #0056b3;
-   }
-
-  /* Filter & Search Container */
-  .filter-container {
-    background: #fff; 
-    padding: 15px;
-     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-     margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+    background: #f4f8fb;
+    margin: 0;
+    padding: 20px;
   }
-  .filter-container form
-   {
-    display: grid;
-     grid-template-columns: 1fr auto;
-      gap: 12px; 
-      align-items: center;
+
+  /* Header Container */
+  .header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 15px;
   }
-  .search-box input {
+
+  .header-container h2 {
+    margin: 0;
+    font-size: 28px;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
     width: 100%;
-     padding: 10px 12px;
-      font-size: 14px;
-    border: 1px solid #ccc;
-     border-radius: 6px;
-      outline: none; 
-      transition: border 0.3s;
   }
-  .search-box input:focus {
-     border-color: #007bff;
-     }
-  .filter-container button {
 
-    background: #007bff; 
+  .add-btn {
+    position: absolute;
+    right: 0;
+    background:black;
     color: #fff;
-     border: none;
-      padding: 10px 16px;
+    padding: 10px 18px;
+    text-decoration: none;
     border-radius: 6px;
-     font-size: 14px;
-      cursor: pointer;
-       transition: background 0.3s;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.3s;
   }
-  .filter-container button:hover {
-     background: #0056b3; 
-    }
+
+  .add-btn:hover {
+    background: #0056b3;
+  }
+
+  /* Search Form */
+  .search-container {
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 12px 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+
+  .search-container form {
+    display: flex;
+    gap: 10px;
+  }
+
+  .search-container input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .search-container button {
+    background: black;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .search-container button:hover {
+    background: #0056b3;
+  }
 
   /* Table Styling */
-  table { 
-    width: 100%; 
+  table {
+    width: 100%;
     border-collapse: collapse;
-     background: #fff;
-    border-radius: 10px;
-     overflow: hidden;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-     }
-  thead {
-     background: #007bff; 
-     color: #fff;
-     }
-  th, td { 
-    padding: 14px 16px;
-     text-align: left; 
-     font-size: 14px;
-      border-bottom: 1px solid #eee;
-     }
-  th { 
-    font-size: 15px;
-     font-weight: bold;
-      white-space: nowrap;
-     }
-  tbody tr:hover {
-     background: #f9fbfd;
-    }
-
-  /* Images */
-  .image-gallery { 
-    display: flex; 
-    flex-wrap: wrap;
-     gap: 6px;
-     }
-  .image-gallery img 
-  {
-    width: 50px;
-     height: 50px; 
-     object-fit: cover;
-      border-radius: 4px;
-    border: 1px solid #ccc;
-     transition: transform 0.3s;
-  }
-  .image-gallery img:hover {
-     transform: scale(1.1);
-     }
-
-  /* Actions */
-  .action-buttons {
-     display: flex;
-      gap: 8px; 
-    }
-  .icon-btn {
-     width: 34px;
-      height: 34px;
-       display: flex;
-        justify-content: center;
-         align-items: center;
-    border-radius: 6px;
-     background: none;
-      font-size: 18px;
-       cursor: pointer; 
-       transition: 0.3s;
-       }
-  .edit-btn { 
-    color: #28a745; 
-  }
-  .edit-btn:hover { 
-    background: #e9f7ef;
-   }
-  .delete-btn {
-     color: #dc3545;
-     }
-  .delete-btn:hover {
-     background: #f8d7da; 
-    }
-
-  /* Notes Icon */
-  .notes-icon { 
-    display: inline-block;
-     width: 26px; 
-     height: 26px;
-      background: #007bff;
-       color: #fff;
-    border-radius: 50%;
-     text-align: center;
-      font-size: 16px;
-       line-height: 26px;
-        font-weight: bold; 
-        cursor: pointer;
-       }
-
-  /* Modal */
-  .modal {
-     display: none;
-      position: fixed;
-       top: 0;
-        left: 0;
-        width: 100%;
-         height: 100%;
-    background: rgba(0,0,0,0.6);
-     justify-content: center; 
-     align-items: center;
-      padding: 20px;
-     }
-  .modal-content { 
     background: #fff;
-     padding: 20px 25px;
-      border-radius: 8px;
-    max-width: 600px;
-     width: 90%; 
-     position: relative;
-      animation: fadeIn 0.3s ease-in-out; 
-    }
-  .modal-content h3 {
-     margin-bottom: 10px;
-      font-size: 20px;
-     }
-  .modal-content p {
-     font-size: 15px;
-      color: #555;
-     }
-  .close-btn {
-     position: absolute;
-      top: 12px; 
-      right: 15px; 
-      font-size: 22px;
-       cursor: pointer;
-       }
+    margin-top: 10px;
+  }
 
-  @media(max-width:992px)
-  {
-     th, td{
-      font-size:13px;
-      padding:10px;
-      } 
-      .filter-container form{
-        grid-template-columns:1fr;
-        }
-         }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 12px 14px;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  th {
+    text-align: center;
+    background: black;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  tbody tr:hover td {
+    background: #f9fbfd;
+  }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<div class="header">
+<!-- Header and Add Button -->
+<div class="header-container">
   <h2>StandBy Product</h2>
   <a href="{% url 'add' %}" class="add-btn"><i class="fas fa-plus"></i> Add New</a>
 </div>
 
 <!-- Search Form -->
-<div class="filter-container">
+<div class="search-container">
   <form method="get" action="">
-    <div class="search-box">
-      <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search by Name or Serial Number...">
-    </div>
+    <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search by Name or Serial Number...">
     <button type="submit"><i class="fas fa-search"></i> Search</button>
   </form>
 </div>
@@ -270,27 +156,26 @@
   <td>{{ item.serial_number }}</td>
   <td>
     {% if item.notes %}
-      <span class="notes-icon" onclick="openModal('{{ item.name|escapejs }}', '{{ item.notes|escapejs }}')">i</span>
+      <span style="display:inline-block;background:#007bff;color:#fff;border-radius:50%;width:24px;height:24px;text-align:center;line-height:24px;cursor:pointer;"
+            onclick="openModal('{{ item.name|escapejs }}', '{{ item.notes|escapejs }}')">i</span>
     {% else %}
       <span style="color:#888;">—</span>
     {% endif %}
   </td>
   <td>
     {% if item.images.all %}
-      <div class="image-gallery">
-        {% for img in item.images.all %}
-          <img src="{{ img.image.url }}" alt="{{ item.name }}">
-        {% endfor %}
-      </div>
+      {% for img in item.images.all %}
+        <img src="{{ img.image.url }}" alt="{{ item.name }}" style="width:40px;height:40px;border-radius:4px;border:1px solid #ccc;object-fit:cover;">
+      {% endfor %}
     {% else %} No Images {% endif %}
   </td>
   <td>{{ item.stock }}</td>
   <td>{{ item.created_by.username }}</td>
-  <td class="">
-    <a href="{% url 'item_edit' item.id %}" class="icon-btn edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+  <td>
+    <a href="{% url 'item_edit' item.id %}" style="color:#28a745;font-size:18px;margin-right:6px;"><i class="fas fa-edit"></i></a>
     <form action="{% url 'item_delete' item.id %}" method="POST" style="display:inline;">
       {% csrf_token %}
-      <button type="submit" class="icon-btn delete-btn" title="Delete" onclick="return confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></button>
+      <button type="submit" style="color:#dc3545;background:none;border:none;font-size:18px;cursor:pointer;" onclick="return confirm('Are you sure?');"><i class="fas fa-trash-alt"></i></button>
     </form>
   </td>
 </tr>
@@ -301,9 +186,9 @@
 </table>
 
 <!-- Modal -->
-<div class="modal" id="notesModal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">&times;</span>
+<div id="notesModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;">
+  <div style="background:#fff;padding:20px;border-radius:6px;max-width:500px;width:90%;position:relative;">
+    <span onclick="closeModal()" style="position:absolute;top:10px;right:12px;cursor:pointer;font-size:20px;">&times;</span>
     <h3 id="modalTitle">Notes</h3>
     <p id="modalText"></p>
   </div>

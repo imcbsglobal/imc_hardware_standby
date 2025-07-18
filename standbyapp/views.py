@@ -91,9 +91,13 @@ def item_list(request):
 
     items = Item.objects.all().order_by('-created_at')
 
+def item_list(request):
+    search_query = request.GET.get('search', '').strip()
+    items = Item.objects.all().order_by('-created_at')
+
     if search_query:
         items = items.filter(
-            Q(name__icontains=search_query) | Q(serial_number__icontains=search_query)
+            Q(name__istartswith=search_query) | Q(serial_number__istartswith=search_query)
         )
 
     return render(request, 'addtable.html', {'items': items})
